@@ -163,59 +163,59 @@ fi
 
 # Before build
 # Search packages that depend on pluginlib and generate plugin loader.
-echo
-echo -e '\e[34mBuilding pluginlib support...\e[39m'
-echo
+# echo
+# echo -e '\e[34mBuilding pluginlib support...\e[39m'
+# echo
 
-pluginlib_helper_file=pluginlib_helper.cpp
-$my_loc/files/pluginlib_helper/pluginlib_helper.py -scanroot $prefix/catkin_ws/src ${plugin_search_paths[*]} -cppout $my_loc/files/pluginlib_helper/$pluginlib_helper_file
-cp $my_loc/files/pluginlib_helper/$pluginlib_helper_file $prefix/catkin_ws/src/pluginlib/src/
-line="add_library(pluginlib STATIC src/pluginlib_helper.cpp)"
-# temporally turn off error detection
-set +e
-grep "$line" $prefix/catkin_ws/src/pluginlib/CMakeLists.txt
-# if line is not already added, then add it to the pluginlib cmake
-if [ $? -ne 0 ]; then
-    # backup the file
-    cp $prefix/catkin_ws/src/pluginlib/CMakeLists.txt $prefix/catkin_ws/src/pluginlib/CMakeLists.txt.bak
-    sed -i '/INCLUDE_DIRS include/a LIBRARIES ${PROJECT_NAME}' $prefix/catkin_ws/src/pluginlib/CMakeLists.txt
-    echo -e "\n"$line >> $prefix/catkin_ws/src/pluginlib/CMakeLists.txt
-    echo 'install(TARGETS pluginlib RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION} ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION} LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})' >> $prefix/catkin_ws/src/pluginlib/CMakeLists.txt
-fi
-# turn error detection back on
-set -e
+# pluginlib_helper_file=pluginlib_helper.cpp
+# $my_loc/files/pluginlib_helper/pluginlib_helper.py -scanroot $prefix/catkin_ws/src ${plugin_search_paths[*]} -cppout $my_loc/files/pluginlib_helper/$pluginlib_helper_file
+# cp $my_loc/files/pluginlib_helper/$pluginlib_helper_file $prefix/catkin_ws/src/pluginlib/src/
+# line="add_library(pluginlib STATIC src/pluginlib_helper.cpp)"
+# # temporally turn off error detection
+# set +e
+# grep "$line" $prefix/catkin_ws/src/pluginlib/CMakeLists.txt
+# # if line is not already added, then add it to the pluginlib cmake
+# if [ $? -ne 0 ]; then
+#     # backup the file
+#     cp $prefix/catkin_ws/src/pluginlib/CMakeLists.txt $prefix/catkin_ws/src/pluginlib/CMakeLists.txt.bak
+#     sed -i '/INCLUDE_DIRS include/a LIBRARIES ${PROJECT_NAME}' $prefix/catkin_ws/src/pluginlib/CMakeLists.txt
+#     echo -e "\n"$line >> $prefix/catkin_ws/src/pluginlib/CMakeLists.txt
+#     echo 'install(TARGETS pluginlib RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION} ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION} LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})' >> $prefix/catkin_ws/src/pluginlib/CMakeLists.txt
+# fi
+# # turn error detection back on
+# set -e
 
 echo
 echo -e '\e[34mBuilding library dependencies.\e[39m'
 echo
 
 # if the library doesn't exist, then build it
-[ -f $TARGET_DIR/lib/libbz2.a ] || run_cmd build_library_with_cmake bzip2 $LIBS_DIR/bzip2
-[ -f $TARGET_DIR/lib/libuuid.a ] || run_cmd build_library_with_cmake uuid $LIBS_DIR/uuid
+# [ -f $TARGET_DIR/lib/libbz2.a ] || run_cmd build_library_with_cmake bzip2 $LIBS_DIR/bzip2
+# [ -f $TARGET_DIR/lib/libuuid.a ] || run_cmd build_library_with_cmake uuid $LIBS_DIR/uuid
 [ -f $TARGET_DIR/lib/libboost_system.a ] || run_cmd copy_boost $LIBS_DIR/boost
-[ -f $TARGET_DIR/lib/libPocoFoundation.a ] || run_cmd build_library_with_toolchain poco $LIBS_DIR/poco
-[ -f $TARGET_DIR/lib/libtinyxml.a ] || run_cmd build_library_with_cmake tinyxml $LIBS_DIR/tinyxml
-[ -f $TARGET_DIR/lib/libtinyxml2.a ] || run_cmd build_library_with_cmake tinyxml2 $LIBS_DIR/tinyxml2
+# [ -f $TARGET_DIR/lib/libPocoFoundation.a ] || run_cmd build_library_with_toolchain poco $LIBS_DIR/poco
+# [ -f $TARGET_DIR/lib/libtinyxml.a ] || run_cmd build_library_with_cmake tinyxml $LIBS_DIR/tinyxml
+# [ -f $TARGET_DIR/lib/libtinyxml2.a ] || run_cmd build_library_with_cmake tinyxml2 $LIBS_DIR/tinyxml2
 [ -f $TARGET_DIR/lib/libconsole_bridge.a ] || run_cmd build_library_with_cmake console_bridge $LIBS_DIR/console_bridge
-[ -f $TARGET_DIR/lib/liblz4.a ] || run_cmd build_library_with_cmake lz4 $LIBS_DIR/lz4/cmake_unofficial
-[ -f $TARGET_DIR/lib/libcurl.a ] || run_cmd build_library_with_toolchain curl $LIBS_DIR/curl
-[ -f $TARGET_DIR/include/urdf_model/model.h ] || run_cmd build_library_with_cmake urdfdom_headers $LIBS_DIR/urdfdom_headers
-[ -f $TARGET_DIR/lib/liburdfdom_model.a ] || run_cmd build_library_with_cmake urdfdom $LIBS_DIR/urdfdom
-[ -f $TARGET_DIR/lib/libiconv.a ] || run_cmd build_library_with_toolchain libiconv $LIBS_DIR/libiconv
-[ -f $TARGET_DIR/lib/libxml2.a ] || run_cmd build_library_with_toolchain libxml2 $LIBS_DIR/libxml2
-[ -f $TARGET_DIR/lib/libcollada-dom2.4-dp.a ] || run_cmd build_library_with_cmake collada_dom $LIBS_DIR/collada_dom
-[ -f $TARGET_DIR/lib/libassimp.a ] || run_cmd build_library_with_cmake assimp $LIBS_DIR/assimp
-[ -f $TARGET_DIR/include/eigen3/signature_of_eigen3_matrix_library ] || run_cmd build_library_with_cmake eigen $LIBS_DIR/eigen
-[ -f $TARGET_DIR/lib/libqhullstatic.a ] || run_cmd build_library_with_cmake qhull $LIBS_DIR/qhull
-[ -f $TARGET_DIR/lib/libyaml-cpp.a ] || run_cmd build_library_with_cmake yaml-cpp $LIBS_DIR/yaml-cpp
-[ -f $TARGET_DIR/lib/libflann_cpp_s.a ] || run_cmd build_library_with_cmake flann $LIBS_DIR/flann
-[ -f $TARGET_DIR/lib/libpcl_common.a ] || run_cmd build_library_with_cmake pcl $LIBS_DIR/pcl
-[ -f $TARGET_DIR/lib/libBulletSoftBody.a ] || run_cmd build_library_with_cmake bullet $LIBS_DIR/bullet
-[ -f $TARGET_DIR/lib/libSDL.a ] || run_cmd build_library_with_toolchain sdl $LIBS_DIR/sdl
-[ -f $TARGET_DIR/lib/libSDL_image.a ] || run_cmd build_library_with_toolchain sdl-image $LIBS_DIR/sdl-image
-[ -f $TARGET_DIR/lib/libogg.a ] || run_cmd build_library_with_toolchain ogg $LIBS_DIR/ogg
-[ -f $TARGET_DIR/lib/libvorbis.a ] || run_cmd build_library_with_toolchain vorbis $LIBS_DIR/vorbis
-[ -f $TARGET_DIR/lib/libtheora.a ] || run_cmd build_library_with_toolchain theora $LIBS_DIR/theora
+# [ -f $TARGET_DIR/lib/liblz4.a ] || run_cmd build_library_with_cmake lz4 $LIBS_DIR/lz4/cmake_unofficial
+# [ -f $TARGET_DIR/lib/libcurl.a ] || run_cmd build_library_with_toolchain curl $LIBS_DIR/curl
+# [ -f $TARGET_DIR/include/urdf_model/model.h ] || run_cmd build_library_with_cmake urdfdom_headers $LIBS_DIR/urdfdom_headers
+# [ -f $TARGET_DIR/lib/liburdfdom_model.a ] || run_cmd build_library_with_cmake urdfdom $LIBS_DIR/urdfdom
+# [ -f $TARGET_DIR/lib/libiconv.a ] || run_cmd build_library_with_toolchain libiconv $LIBS_DIR/libiconv
+# [ -f $TARGET_DIR/lib/libxml2.a ] || run_cmd build_library_with_toolchain libxml2 $LIBS_DIR/libxml2
+# [ -f $TARGET_DIR/lib/libcollada-dom2.4-dp.a ] || run_cmd build_library_with_cmake collada_dom $LIBS_DIR/collada_dom
+# [ -f $TARGET_DIR/lib/libassimp.a ] || run_cmd build_library_with_cmake assimp $LIBS_DIR/assimp
+# [ -f $TARGET_DIR/include/eigen3/signature_of_eigen3_matrix_library ] || run_cmd build_library_with_cmake eigen $LIBS_DIR/eigen
+# [ -f $TARGET_DIR/lib/libqhullstatic.a ] || run_cmd build_library_with_cmake qhull $LIBS_DIR/qhull
+# [ -f $TARGET_DIR/lib/libyaml-cpp.a ] || run_cmd build_library_with_cmake yaml-cpp $LIBS_DIR/yaml-cpp
+# [ -f $TARGET_DIR/lib/libflann_cpp_s.a ] || run_cmd build_library_with_cmake flann $LIBS_DIR/flann
+# [ -f $TARGET_DIR/lib/libpcl_common.a ] || run_cmd build_library_with_cmake pcl $LIBS_DIR/pcl
+# [ -f $TARGET_DIR/lib/libBulletSoftBody.a ] || run_cmd build_library_with_cmake bullet $LIBS_DIR/bullet
+# [ -f $TARGET_DIR/lib/libSDL.a ] || run_cmd build_library_with_toolchain sdl $LIBS_DIR/sdl
+# [ -f $TARGET_DIR/lib/libSDL_image.a ] || run_cmd build_library_with_toolchain sdl-image $LIBS_DIR/sdl-image
+# [ -f $TARGET_DIR/lib/libogg.a ] || run_cmd build_library_with_toolchain ogg $LIBS_DIR/ogg
+# [ -f $TARGET_DIR/lib/libvorbis.a ] || run_cmd build_library_with_toolchain vorbis $LIBS_DIR/vorbis
+# [ -f $TARGET_DIR/lib/libtheora.a ] || run_cmd build_library_with_toolchain theora $LIBS_DIR/theora
 
 echo
 echo -e '\e[34mCross-compiling ROS.\e[39m'
